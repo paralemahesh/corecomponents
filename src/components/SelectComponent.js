@@ -1,5 +1,7 @@
 import classnames from "classnames";
 import { useRef, useEffect, useState } from "react";
+import {GoChevronDown} from 'react-icons/go';
+import Panel from './Panel';
 
 export default function SelectComponent(props) {
   const [selected, setSelected] = useState(null);
@@ -7,7 +9,10 @@ export default function SelectComponent(props) {
   const optionRef = useRef(null);
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
-  const handleSelectOption = (option) => setSelected(option.target.innerHTML);
+  const handleSelectOption = (option) => {
+    setSelected(option.target.innerHTML);
+    setIsDrawerOpen(false)
+  }
 
   useEffect(() => {
     function listener(event){
@@ -34,28 +39,21 @@ export default function SelectComponent(props) {
   )
 
   const classNames = classnames(props.className,
-    "flex flex-col relative");
-  const chosenClassNames = classnames("border-solid border-2 border-slate-500 rounded",
-    "drop-shadow-md",
-    "flex flex-row");
-  const optionsClassNames = classnames("border-solid border-2 border-slate-500 rounded",
-    "drop-shadow-md",
+    "relative");
+  const optionsClassNames = classnames(
     "absolute",
     "max-h-20",
-    "top-8",
+    "top-full",
     "w-full",
     "overflow-y-scroll");
 
   return <div className={classNames} ref={optionRef}>
-      <div className={chosenClassNames}>
-        <span className="flex-auto">{ selected === null ? "--Select option--" : selected }</span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
-          strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 flex-none" onClick={toggleDrawer}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-        </svg>
-      </div>
-      {isDrawerOpen && (<div className={optionsClassNames}>
+      <Panel className="flex justify-between items-center cursor-pointer">
+        { selected === null ? "--Select option--" : selected }
+        <GoChevronDown onClick={toggleDrawer} className="text-lg"></GoChevronDown>
+      </Panel>
+      {isDrawerOpen && (<Panel className={optionsClassNames}>
         {options}
-      </div>)}
+      </Panel>)}
     </div>
 }
